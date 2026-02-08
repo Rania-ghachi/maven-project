@@ -18,9 +18,19 @@ steps{
 bat 'C://apache-maven-3.9.12//bin//mvn package'
 archiveArtifacts 'target/*.jar'
 }
+post {
+emailext(subject: "Build réussi : ",
+         body: "Le build a réussi : ",
+         to: "assia.cntsid@gmail.com")
+
+failure {
+echo "Build failed"}
+success {
+echo "Build succeeded" }
+}
 }
 
-stage('documentation') {
+/* stage('documentation') {
     steps {
         bat '''
         if not exist doc mkdir doc
@@ -35,7 +45,7 @@ stage('documentation') {
          reportFiles: 'index.html',
          reportName: 'Documentation'
          ])
-    }
-}
+    } */
+
 }
 }
