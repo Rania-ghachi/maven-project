@@ -16,13 +16,13 @@ junit 'target/surefire-reports *//*.xml'
 stage('build') {
 steps{
 bat 'C://apache-maven-3.9.12//bin//mvn package'
-archiveArtifacts 'target/*.jar'
+archiveArtifacts 'target *//*.jar'
 }
 }
 
 stage('documentation') {
 steps{
-bat 'C://apache-maven-3.9.12//bin//mvn  javadoc:javadoc'
+bat 'C://apache-maven-3.9.12//bin//mvn javadoc:javadoc'
 archiveArtifacts 'target/site'
 }
 }
