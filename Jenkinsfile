@@ -22,8 +22,12 @@ archiveArtifacts 'target/*.jar'
 
 stage('documentation') {
 steps{
-bat 'C://apache-maven-3.9.12//bin//mvn javadoc:javadoc'
-archiveArtifacts 'target/site/'
+bat '''
+mkdir -p doc
+cp -r 'target/site/* doc/'
+zip -r doc.zip doc
+'''
+archiveArtifacts 'doc.zip'
 }
 }
 }
