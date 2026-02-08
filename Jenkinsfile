@@ -10,14 +10,14 @@ pipeline {
             }
             post {
                 failure {
-                    emailtext(
+                    mail(
                         subject: "Build echec",
                         body: "Le build a echoue",
                         to: "assia.cntsid@gmail.com"
                     )
                 }
                 success {
-                    emailtext(
+                    mail(
                         subject: "Build reussi",
                         body: "Le build a reussi",
                         to: "assia.cntsid@gmail.com"
@@ -26,7 +26,7 @@ pipeline {
             }
         }
 
-        stage('documentation') {
+/*         stage('documentation') {
             steps {
                 bat '''
                 if not exist doc mkdir doc
@@ -44,7 +44,7 @@ pipeline {
                     reportName: 'Documentation'
                 ])
             }
-        }
+        } */
 
     }
 }
