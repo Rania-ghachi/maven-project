@@ -21,14 +21,15 @@ archiveArtifacts 'target/*.jar'
 }
 
 stage('documentation') {
-steps{
-bat '''
-mkdir -p doc
-cp -r 'target/site/* doc/'
-zip -r doc.zip doc
-'''
-archiveArtifacts 'doc.zip'
+    steps {
+        bat '''
+        if not exist doc mkdir doc
+        xcopy target\\site\\* doc\\ /E /I /Y
+        powershell Compress-Archive -Path doc\\* -DestinationPath doc.zip -Force
+        '''
+        archiveArtifacts 'doc.zip'
+    }
 }
-}
+
 }
 }
