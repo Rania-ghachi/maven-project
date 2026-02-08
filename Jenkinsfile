@@ -19,14 +19,16 @@ bat 'C://apache-maven-3.9.12//bin//mvn package'
 archiveArtifacts 'target/*.jar'
 }
 post {
+
+
+failure {
+emailtext(subject: "Build echec : ",
+         body: "Le build a echec : ",
+         to: "assia.cntsid@gmail.com")
+success {
 emailtext(subject: "Build réussi : ",
          body: "Le build a réussi : ",
          to: "assia.cntsid@gmail.com")
-
-failure {
-echo "Build failed"}
-success {
-echo "Build succeeded" }
 }
 }
 
