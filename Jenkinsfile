@@ -16,7 +16,7 @@ junit 'target/surefire-reports *//*.xml'
 stage('build') {
 steps{
 bat 'C://apache-maven-3.9.12//bin//mvn package'
-archiveArtifacts 'target *//*.jar'
+archiveArtifacts 'target/*.jar'
 }
 }
 
