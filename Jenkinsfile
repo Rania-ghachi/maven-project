@@ -62,12 +62,6 @@ pipeline {
                   parallel {
                     stage('Unit Testing1') {
                         steps {
-                                        bat '''
-                                        if not exist doc mkdir doc
-                                        xcopy target\\site\\* doc\\ /E /I /Y
-                                        powershell Compress-Archive -Path doc\\* -DestinationPath doc.zip -Force
-                                        '''
-                                        archiveArtifacts 'doc.zip'
 
                                         publishHTML(target: [
                                             allowMissing: false,
@@ -81,21 +75,8 @@ pipeline {
                     }
                     stage('Unit Testing2') {
                         steps {
-                                        bat '''
-                                        if not exist doc mkdir doc
-                                        xcopy target\\site\\* doc\\ /E /I /Y
-                                        powershell Compress-Archive -Path doc\\* -DestinationPath doc.zip -Force
-                                        '''
-                                        archiveArtifacts 'doc.zip'
+                                        bat 'mvn test'
 
-                                        publishHTML(target: [
-                                            allowMissing: false,
-                                            alwaysLinkToLastBuild: true,
-                                            keepAll: true,
-                                            reportDir: 'target/site/apidocs',
-                                            reportFiles: 'index.html',
-                                            reportName: 'Documentation'
-                                        ])
                                     }
                     }
                   }
