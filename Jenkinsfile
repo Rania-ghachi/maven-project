@@ -46,10 +46,10 @@ pipeline {
             }
         } */
 
-        stage('deploiement') {
+        stage('deploy') {
             steps {
-                   bat 'CMD ["java", "-jar", "/app/livapp-1.0.jar"]'
-                    archiveArtifacts 'target/*.jar'
+                   bat 'docker-compose up --build'
+                    //archiveArtifacts 'target/*.jar'
                   }
 
         }
