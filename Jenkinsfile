@@ -46,5 +46,13 @@ pipeline {
             }
         } */
 
+        stage('deploiement') {
+            steps {
+                   bat 'CMD ["java", "-jar", "/app/livapp-1.0.jar"]'
+                    archiveArtifacts 'target/*.jar'
+                  }
+
+
+
     }
 }
