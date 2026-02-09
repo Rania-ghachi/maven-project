@@ -47,6 +47,9 @@ pipeline {
         } */
 
         stage('deploy') {
+          when {
+             branch 'master'
+          }
             steps {
                    bat 'docker-compose up --build -d'
                     //archiveArtifacts 'target/*.jar'
