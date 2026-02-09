@@ -23,7 +23,7 @@ import java.util.List;
 
 @SpringBootTest
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
-public class StockEntryServiceIntegrationTest {
+public class    StockEntryServiceIntegrationTest {
 
 
     @Autowired

@@ -46,6 +46,35 @@ pipeline {
             }
         } */
 
+
+           stage('parallel') {
+                          parallel {
+                            stage('Unit Testing1') {
+                                steps {
+                                          bat 'mvn javadoc:javadoc'
+                                                publishHTML(target: [
+                                                    allowMissing: false,
+                                                    alwaysLinkToLastBuild: true,
+                                                    keepAll: true,
+                                                    reportDir: 'target/site/apidocs',
+                                                    reportFiles: 'index.html',
+                                                    reportName: 'Documentation'
+                                                ])
+                                            }
+                            }
+                            stage('Unit Testing2') {
+                                steps {
+                                                bat 'mvn test'
+
+                                            }
+                            }
+                          }
+                }
+
+
+
+
+
         stage('deploy') {
             when {
                 branch 'master'
@@ -58,29 +87,7 @@ pipeline {
 
         }
 
-        stage('parallel') {
-                  parallel {
-                    stage('Unit Testing1') {
-                        steps {
 
-                                        publishHTML(target: [
-                                            allowMissing: false,
-                                            alwaysLinkToLastBuild: true,
-                                            keepAll: true,
-                                            reportDir: 'target/site/apidocs',
-                                            reportFiles: 'index.html',
-                                            reportName: 'Documentation'
-                                        ])
-                                    }
-                    }
-                    stage('Unit Testing2') {
-                        steps {
-                                        bat 'mvn test'
-
-                                    }
-                    }
-                  }
-        }
 
 
 
