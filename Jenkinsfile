@@ -8,7 +8,7 @@ pipeline {
                 bat 'C://apache-maven-3.9.12//bin//mvn package'
                 archiveArtifacts 'target/*.jar'
             }
-            post {
+            /* post {
                 failure {
                     mail(
                         subject: "Build echec",
@@ -23,7 +23,7 @@ pipeline {
                         to: "assia.cntsid@gmail.com"
                     )
                 }
-            }
+            }*/
         }
 
 /*         stage('documentation') {
