@@ -50,6 +50,7 @@ pipeline {
             steps {
                    bat 'docker-compose up --build -d'
                     //archiveArtifacts 'target/*.jar'
+                    //coment
                   }
 
         }
