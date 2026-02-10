@@ -66,7 +66,7 @@ pipeline {
                                 steps {
                                                 bat 'mvn test'
 
-                                            }
+                                       }
                             }
                           }
                 }
@@ -80,7 +80,9 @@ pipeline {
                 branch 'master'
                   }
             steps {
-                   bat 'docker-compose up --build -d'
+                   //bat 'docker-compose up --build -d'
+
+                   bat 'mvn deploy'
                     //archiveArtifacts 'target/*.jar'
                     //coment
                   }
