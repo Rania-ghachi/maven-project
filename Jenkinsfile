@@ -160,10 +160,12 @@ pipeline {
                          echo "pro stable ${stableTag}" */
                         echo "Starting rollback to tag: ${ROLLBACK_TAG}"
                         script {
-                           bat """
-                                git fetch origin --tags --force
-                                git checkout tags/${ROLLBACK_TAG} -b ${ROLLBACK_BRANCH}
-                            """
+                        bat """
+                            git fetch origin --tags --force
+                            git checkout ${ROLLBACK_BRANCH} || git checkout -b ${ROLLBACK_BRANCH}
+                            git reset --hard tags/${ROLLBACK_TAG}
+                        """
+
 
                             echo "Rolled back to tag ${ROLLBACK_TAG} on new branch ${ROLLBACK_BRANCH}"
 
