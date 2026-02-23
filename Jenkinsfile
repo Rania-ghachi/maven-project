@@ -138,12 +138,12 @@ pipeline {
                                     error("Health endpoint returned non-UP status")
                                 }
 
-                            } /* else {
+                            }  else {
                                 currentBuild.result = "FAILURE"
 
 
-                            } */
-                            echo currentBuild.result
+                            }
+                            echo "${currentBuild.result}"
                         }
                     }
                 }
