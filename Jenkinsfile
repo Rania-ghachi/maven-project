@@ -80,11 +80,16 @@ pipeline {
                 branch 'master'
                   }
             steps {
-                   bat 'docker-compose up --build -d'
+                    echo 'Deploying application...'
 
-                   //bat 'mvn deploy'
-                    //archiveArtifacts 'target/*.jar'
-                  }
+                    // Stop and remove containers safely
+                    bat 'docker-compose down --remove-orphans'
+                    bat 'docker rm -f spring-boot-app || exit 0'
+                    bat 'docker rm -f mysql-db || exit 0'
+
+                    // Rebuild and start
+                    bat 'docker-compose up --build -d'
+                }
 
         }
 
@@ -102,14 +107,13 @@ pipeline {
 
 
                    def result = bat(
-                       script: """
-                           curl -s -o response.json -w "%%{http_code}" http://localhost:8082/actuator/health
-                       """,
-                       returnStdout: true
-                   ).trim()
+                        def result = bat(
+                                       script: 'curl -s -o response.json -w %%{http_code} http://localhost:8082/actuator/health',
+                                       returnStdout: true
+                                   ).trim()
 
 
-                   def httpCode = result
+                    def httpCode = result[-3..-1]
 
 
                    echo "HTTP Code: ${httpCode}"
