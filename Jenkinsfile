@@ -169,8 +169,8 @@ pipeline {
 
 
                             //sh './deploy.sh'
-                            bat './mvnw clean'
-                            bat './mvnw install'
+                            bat 'mvn clean'
+                            bat 'mvn install'
 
                             // Stop and remove containers safely
                             bat 'docker-compose down --remove-orphans'
