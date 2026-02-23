@@ -154,10 +154,14 @@ pipeline {
 
                            //sh './deploy.sh'
                            bat "mvn clean package"
+                           // Stop and remove containers safely
+                            bat 'docker-compose down --remove-orphans'
+                            bat 'docker rm -f spring-boot-app || exit 0'
+                            bat 'docker rm -f mysql-db || exit 0'
+
+                            // Rebuild and start
+                            bat 'docker-compose up --build -d'
                            echo "Rollback deployment complete"
-
-
-
 
                        }
                    }
