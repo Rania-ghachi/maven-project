@@ -133,6 +133,7 @@ pipeline {
                                } else {
                                    echo "Application not reachable"
                                     currentBuild.result = 'FAILURE'
+                                    echo "Result: ${currentBuild.currentResult}"
                                }
                            }
                        }
@@ -146,8 +147,9 @@ pipeline {
 
         stage('Rollback') {
                    when {
-                   echo "FAILURE: ${currentBuild.result}"
+
                        expression { currentBuild.result == 'FAILURE' }
+
                    }
                    steps {
                       /*  def stableTag = bat(
