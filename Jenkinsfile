@@ -133,8 +133,9 @@ pipeline {
                                } else {
                                    echo "Application not reachable"
                                     currentBuild.result = 'FAILURE'
-                                    echo "Result: ${currentBuild.currentResult}"
+
                                }
+                                 echo "Result: ${currentBuild.result}"
                            }
                        }
                     }
