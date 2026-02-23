@@ -103,7 +103,7 @@ pipeline {
 
                    def result = bat(
                        script: """
-                           curl -s http://localhost:8082/actuator/health -o response.json
+                           curl -s -o response.json -w "%%{http_code}" http://localhost:8082/actuator/health
                        """,
                        returnStdout: true
                    ).trim()
