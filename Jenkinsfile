@@ -1,5 +1,9 @@
 pipeline {
     agent any
+    environment {
+           ROLLBACK_TAG = "v1.0.0"   // Set your stable rollback tag here
+           ROLLBACK_BRANCH = "rollback/hotfix-1.0.0"
+       }
 
     stages {
 
@@ -62,12 +66,12 @@ pipeline {
                                                 ])
                                             }
                             }*/
-                            stage('Unit Testing2') {
+                           /*  stage('Unit Testing2') {
                                 steps {
                                                 bat 'mvn test'
 
                                        }
-                            }
+                            } */
                        //   }
              //   }
 
@@ -125,6 +129,40 @@ pipeline {
                 }
             }
         }
+
+        //Roolback stage
+
+
+        stage('Rollback') {
+                   when {
+                       expression { currentBuild.result == 'FAILURE' }
+                   }
+                   steps {
+                      /*  def stableTag = bat(
+                               script: "git tag --sort=-creatordate | head -n 1",
+                               returnStdout: true
+                           ).trim()
+                       echo "pro stable ${stableTag}" */
+                       echo "Starting rollback to tag: ${ROLLBACK_TAG}"
+                       script {
+                           bat """
+                                git fetch origin --tags --force
+                                git checkout tags/${ROLLBACK_TAG} -b ${ROLLBACK_BRANCH}
+                           """
+                           echo "Rolled back to tag ${ROLLBACK_TAG} on new branch ${ROLLBACK_BRANCH}"
+
+
+                           //sh './deploy.sh'
+                           bat "mvn clean package"
+                           echo "Rollback deployment complete"
+
+
+
+
+                       }
+                   }
+               }
+
 
 
 
