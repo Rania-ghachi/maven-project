@@ -146,6 +146,7 @@ pipeline {
 
         stage('Rollback') {
                    when {
+                   echo "FAILURE: ${currentBuild.result}"
                        expression { currentBuild.result == 'FAILURE' }
                    }
                    steps {
