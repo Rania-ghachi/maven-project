@@ -47,7 +47,7 @@ pipeline {
         } */
 
 
-           stage('parallel') {
+       /*    stage('parallel') {
                           parallel {
                             stage('Unit Testing1') {
                                 steps {
@@ -61,15 +61,15 @@ pipeline {
                                                     reportName: 'Documentation'
                                                 ])
                                             }
-                            }
+                            }*/
                             stage('Unit Testing2') {
                                 steps {
                                                 bat 'mvn test'
 
                                        }
                             }
-                          }
-                }
+                       //   }
+             //   }
 
 
 
@@ -80,9 +80,9 @@ pipeline {
                 branch 'master'
                   }
             steps {
-                   //bat 'docker-compose up --build -d'
+                   bat 'docker-compose up --build -d'
 
-                   bat 'mvn deploy'
+                   //bat 'mvn deploy'
                     //archiveArtifacts 'target/*.jar'
                     //coment
                   }
