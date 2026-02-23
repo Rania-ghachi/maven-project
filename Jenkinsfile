@@ -102,86 +102,103 @@ pipeline {
 
 
         stage('Health Check') {
-            steps {
-                echo "Checking Health..."
-                sleep time: 15, unit: 'SECONDS'
+                    steps {
+                        echo "Checking Health..."
+                        sleep time: 15, unit: 'SECONDS'
 
-                script {
-                    def result = bat(
-                        script: 'curl -s -o response.json -w %%{http_code} http://localhost:8082/actuator/health',
-                        returnStdout: true
-                    ).trim()
+                        script {
 
-                    def httpCode = result[-3..-1]
+                            def httpCode = bat(script: '''
+                                                @echo off
+                                                setlocal
 
-                    echo "HTTP Code: ${httpCode}"
+                                                curl -s -o response.json -w "%%{http_code}" http://localhost:8082/actuator/health > status.txt 2>nul
 
-                               if (httpCode == "200") {
+                                                if errorlevel 1 (
+                                                    echo 000 > status.txt
+                                                )
+
+                                                set /p code=<status.txt
+                                                echo %code%
+
+                                                exit /b 0
+                                                ''',
+                                    returnStdout: true).trim()
+
+                            echo "HTTP Code: ${httpCode}"
+
+                            if (httpCode == "200") {
+
+                                def body = readFile('response.json')
+                                echo "Body: ${body}"
+
+                                if (body.contains('"status":"UP"')) {
+                                    echo "Application is healthy ✅"
+                                } else {
+                                    error("Health endpoint returned non-UP status")
+                                }
+
+                            } else {
+                                currentBuild.result = "FAILURE"
 
 
-                                   def body = readFile('response.json')
-                                   echo "Body: ${body}"
-
-
-                                   if (body.contains('"status":"UP"')) {
-                                       echo "Application is healthy ✅"
-                                   } else {
-                                        currentBuild.result = 'FAILURE'
-                                   }
-
-
-                               } else {
-                                   echo "Application not reachable"
-                                    currentBuild.result = 'FAILURE'
-
-                               }
-                                 echo "Result: ${currentBuild.result}"
-                           }
-                       }
+                            }
+                            echo currentBuild.result
+                        }
                     }
+                }
 
-
-
-
-        //Roolback stage
-
-
-        stage('Rollback') {
-                   when {
-
-                       expression { currentBuild.result == 'FAILURE' }
-
-                   }
-                   steps {
-                      /*  def stableTag = bat(
-                               script: "git tag --sort=-creatordate | head -n 1",
-                               returnStdout: true
-                           ).trim()
-                       echo "pro stable ${stableTag}" */
-                       echo "Starting rollback to tag: ${ROLLBACK_TAG}"
-                       script {
+                stage('Rollback') {
+                    when {
+                        expression { currentBuild.result == "FAILURE" }
+                    }
+                    steps {
+                        /*  def stableTag = sh(
+                                 script: "git tag --sort=-creatordate | head -n 1",
+                                 returnStdout: true
+                             ).trim()
+                         echo "pro stable ${stableTag}" */
+                        echo "Starting rollback to tag: ${ROLLBACK_TAG}"
+                        script {
                            bat """
                                 git fetch origin --tags --force
                                 git checkout tags/${ROLLBACK_TAG} -b ${ROLLBACK_BRANCH}
-                           """
-                           echo "Rolled back to tag ${ROLLBACK_TAG} on new branch ${ROLLBACK_BRANCH}"
+                            """
+
+                            echo "Rolled back to tag ${ROLLBACK_TAG} on new branch ${ROLLBACK_BRANCH}"
 
 
-                           //sh './deploy.sh'
-                           bat "mvn clean package"
-                           // Stop and remove containers safely
+                            //sh './deploy.sh'
+                            bat './mvnw clean'
+                            bat './mvnw install'
+
+                            // Stop and remove containers safely
                             bat 'docker-compose down --remove-orphans'
                             bat 'docker rm -f spring-boot-app || exit 0'
                             bat 'docker rm -f mysql-db || exit 0'
 
                             // Rebuild and start
                             bat 'docker-compose up --build -d'
-                           echo "Rollback deployment complete"
 
-                       }
-                   }
-               }
+                            echo "Rollback deployment complete"
 
 
-    }
-}
+
+
+                        }
+                    }
+                }
+
+
+
+
+            }
+            post {
+                success {
+                    echo 'success'
+                }
+                failure {
+                    echo 'failure'
+                }
+            }
+        }
