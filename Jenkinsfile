@@ -89,6 +89,56 @@ pipeline {
         }
 
 
+        //Health Stage
+
+
+        stage('Health Check') {
+           steps {
+               echo "Checking Health..."
+               sleep time: 10, unit: 'SECONDS'
+
+
+               script {
+
+
+                   def result = sh(
+                       script: """
+                           curl -s -o response.json -w "%{http_code}" http://localhost:8082/actuator/health || echo "000"
+                       """,
+                       returnStdout: true
+                   ).trim()
+
+
+                   def httpCode = result
+
+
+                   echo "HTTP Code: ${httpCode}"
+
+
+                   if (httpCode == "200") {
+
+
+                       def body = readFile('response.json')
+                       echo "Body: ${body}"
+
+
+                       if (body.contains('"status":"UP"')) {
+                           echo "Application is healthy ✅"
+                       } else {
+                            currentBuild.result = 'FAILURE'
+                       }
+
+
+                   } else {
+                       echo "Application not reachable"
+                        currentBuild.result = 'FAILURE'
+                   }
+               }
+           }
+        }
+
+
+
 
 
 
