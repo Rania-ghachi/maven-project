@@ -84,7 +84,6 @@ pipeline {
 
                    //bat 'mvn deploy'
                     //archiveArtifacts 'target/*.jar'
-                    //coment
                   }
 
         }
